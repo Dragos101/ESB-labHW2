@@ -12,14 +12,10 @@ def on_connect(client, userdata, flags, rc):
 # Callback function for the message event
 def on_message(client, userdata, msg):
   # Decode the message
-  print(msg)
   message = msg.payload.decode()
   # Check for subscription match
   if match_subscription(message):
     print("Message matches subscription:", message)
-  publication_window.append(message)
-  if len(publication_window) > window_size:
-    publication_window.pop(0)
 
 # Function to check subscription match (placeholder implementation)
 def match_subscription(message):

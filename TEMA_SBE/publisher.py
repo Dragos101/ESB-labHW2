@@ -13,8 +13,8 @@ publications = pub.Publication().generate_publications(5)
 print(publications)
 
 for publication in publications:
-    publisher.publish("topic", str(publication))
-    time.sleep(1)
+  publisher.publish("topic", str(publication))
+  time.sleep(1)
 
 # Deconectarea de la broker
 publisher.disconnect()
