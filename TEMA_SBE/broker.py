@@ -4,6 +4,8 @@ window_size = 5
 publication_window = []
 connected_clients = []
 subscriptions = []
+publications = []
+matches = {}
 
 def on_new_client(client, userdata, flags, rc):
   print("New client connected:", client)
@@ -18,36 +20,59 @@ def on_connect(client, userdata, flags, rc):
 
 def on_message(client, userdata, msg):
   message = msg.payload.decode()
-  subscriptions.append(message)
+  # print("Received publication:", message)
+  if "PUBLISHER" in message:
+    publications.append(message.replace('PUBLISHER', ''))
+    publication_window.append(message)
+  else:
+    subscriptions.append(message.replace('SUBSCRIBER', ''))
   if match_subscription(msg.topic, message):
     print("Message matches subscription:", message)
-  publication_window.append(message)
-  # if len(publication_window) >= window_size:
-  #   process_publication_window()
+  if len(publication_window) >= window_size:
+    process_publication_window()
 
 def match_subscription(topic, message):
   for subscription in subscriptions:
-    if all(condition_matches(subscription_condition, message) for subscription_condition in subscription):
-      return True
-  return False
+    matches[subscription] = condition_matches(publications, subscription)
 
-def condition_matches(condition, message):
-  print('cava', message)
-  # field, operator, value = condition.split(',')
-  # field_value = message.get(field.strip())
-  # if operator.strip() == '=':
-  #   return field_value == value.strip()
-  # elif operator.strip() == '!=':
-  #   return field_value != value.strip()
-  # elif operator.strip() == '<':
-  #   return field_value < float(value.strip())
-  # elif operator.strip() == '<=':
-  #   return field_value <= float(value.strip())
-  # elif operator.strip() == '>':
-  #   return field_value > float(value.strip())
-  # elif operator.strip() == '>=':
-  #   return field_value >= float(value.strip())
-  # else:
+def condition_matches(publications, subscription):
+  for publication in publications:
+    all_conditions_match = True
+    for condition in subscription:
+      field, operator, value = condition.split(',')
+      field_value = publication.get(field.strip())
+      
+      if operator.strip() == '=':
+        if field_value != value.strip():
+          all_conditions_match = False
+          break
+      elif operator.strip() == '!=':
+        if field_value == value.strip():
+          all_conditions_match = False
+          break
+      elif operator.strip() == '<':
+        if not (field_value < float(value.strip())):
+            all_conditions_match = False
+            break
+      elif operator.strip() == '<=':
+        if not (field_value <= float(value.strip())):
+          all_conditions_match = False
+          break
+      elif operator.strip() == '>':
+        if not (field_value > float(value.strip())):
+          all_conditions_match = False
+          break
+      elif operator.strip() == '>=':
+        if not (field_value >= float(value.strip())):
+          all_conditions_match = False
+          break
+      else:
+        all_conditions_match = False
+        break
+    
+    if all_conditions_match:
+      return True
+
   return False
 
 def notify_subscribers(message):
@@ -57,6 +82,9 @@ def notify_subscribers(message):
 
 def process_publication_window():
   print("Processing publication window:", publication_window)
+  print('publications', publications)
+  print('subscriptions', subscriptions)
+  print('publication_window', publication_window)
   publication_window.clear()
 
 client = mqtt.Client()

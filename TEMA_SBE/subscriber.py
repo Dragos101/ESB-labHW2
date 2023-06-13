@@ -37,9 +37,10 @@ client3.loop_start()
 subscriptions = sub.Subscription().generate_objects(5)
 
 for i in range(0, 5):
-  client1.publish("topic", str(subscriptions[i]))
-  # client2.publish("topic", str(subscriptions))
-  # client3.publish("topic", str(subscriptions))
+  message = "SUBSCRIBER: " + str(subscriptions[i])  # Add "SUBSCRIBER: " prefix to the message
+  client1.publish("topic", message)
+  client2.publish("topic", message)
+  client3.publish("topic", message)
   time.sleep(1)
 
 time.sleep(5)

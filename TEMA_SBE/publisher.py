@@ -2,20 +2,19 @@ import time
 import paho.mqtt.client as mqtt
 import publications as pub
 
+broker_host = "localhost"
+broker_port = 1883
+
 publisher = mqtt.Client("Publisher")
-
-brokers = ["localhost", "localhost"]
-ports = [1883, 1884]
-
-for i in range(len(brokers)):
-  publisher.connect(brokers[i], ports[i])
-  time.sleep(1)
+publisher.connect(broker_host, broker_port)
 
 publications = pub.Publication().generate_publications(5)
 
 for publication in publications:
-  print(publication)
-  publisher.publish("topic", str(publication))
-  time.sleep(1)
+    print(publication)
+    message = "PUBLISHER: " + str(publication)  # Add "SUBSCRIBER: " prefix to the message
+
+    publisher.publish("topic", message)
+    time.sleep(1)
 
 publisher.disconnect()
