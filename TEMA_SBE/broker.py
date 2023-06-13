@@ -32,7 +32,6 @@ def match_subscription(topic, message):
   return False
 
 def condition_matches(condition, message):
-  print('ici', condition)
   print('cava', message)
   # field, operator, value = condition.split(',')
   # field_value = message.get(field.strip())
