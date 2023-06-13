@@ -64,7 +64,20 @@ client.on_connect = on_connect
 client.on_message = on_message
 client.on_new_client = on_new_client
 
+client2 = mqtt.Client()
+client2.on_connect = on_connect
+client2.on_message = on_message
+client2.on_new_client = on_new_client
+
+client3 = mqtt.Client()
+client3.on_connect = on_connect
+client3.on_message = on_message
+client3.on_new_client = on_new_client
 
 client.connect("localhost", 1883)
+client2.connect("localhost", 1884)
+client2.connect("localhost", 1885)
 
 client.loop_forever()
+client2.loop_forever()
+client3.loop_forever()
