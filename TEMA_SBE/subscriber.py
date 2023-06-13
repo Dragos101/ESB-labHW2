@@ -2,39 +2,48 @@ import time
 import paho.mqtt.client as mqtt
 import subscriptions as sub
 
-# Callback function pentru evenimentul de conectare la broker
 def on_connect(client, userdata, flags, rc):
-  print("Connected: " + str(rc))
-  # Abonarea la topicul dorit pentru primirea publicațiilor
-  client.subscribe("topic")
+    print("Connected: " + str(rc))
+    client.subscribe("topic")
 
-# Callback function pentru evenimentul de primire a unui mesaj de la broker
 def on_message(client, userdata, msg):
-  # Decodificarea mesajului
-  message = msg.payload.decode()
-  # Procesarea mesajului
-  process_message(message)
+    message = msg.payload.decode()
+    process_message(message)
 
-# Funcție pentru procesarea mesajului primit
 def process_message(message):
-  print("Received message:", message)
-  # Implement your actions based on the message content
+    print("Received message:", message)
 
-# Setarea callback-urilor de conectare și primire a mesajelor de la broker
-client = mqtt.Client()
-client.on_connect = on_connect
-client.on_message = on_message
+client1 = mqtt.Client()
+client1.on_connect = on_connect
+client1.on_message = on_message
 
-# Conectarea clientului la broker
-client.connect("localhost", 1887)
+client1.connect('localhost', 1883)
+client1.loop_start()
 
-# Pornirea buclei principale pentru a menține conexiunea cu brokerul
-client.loop_start()
+client2 = mqtt.Client()
+client2.on_connect = on_connect
+client2.on_message = on_message
 
-# Simularea nodurilor subscriber
+client2.connect('localhost', 1883)
+client2.loop_start()
+
+client3 = mqtt.Client()
+client3.on_connect = on_connect
+client3.on_message = on_message
+
+client3.connect('localhost', 1883)
+client3.loop_start()
+
 subscriptions = sub.Subscription().generate_objects(5)
-print(subscriptions)
-for subscription in subscriptions:
-  # Register the subscription
-  client.publish("topic", str(subscription))
-  time.sleep(1)  # Pause between subscription registrations
+
+for i in range(0, 5):
+  client1.publish("topic", str(subscriptions[i]))
+  # client2.publish("topic", str(subscriptions))
+  # client3.publish("topic", str(subscriptions))
+  time.sleep(1)
+
+time.sleep(5)
+
+client1.disconnect()
+client2.disconnect()
+client3.disconnect()

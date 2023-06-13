@@ -16,13 +16,13 @@ class Subscription:
   }
 
   subscription_frequency = {
-  "city": {"frequency": 1, 'display': 0},
-  "temp": {"frequency": 1, 'display': 0},
-  "rain": {"frequency": 1, 'display': 0},
-  "wind": {"frequency": 0, 'display': 0},
-  "direction": {"frequency": 0, 'display': 0},
-  "date": {"frequency": 0, 'display': 0}
-}
+    "city": {"frequency": 1, 'display': 0},
+    "temp": {"frequency": 1, 'display': 0},
+    "rain": {"frequency": 1, 'display': 0},
+    "wind": {"frequency": 0, 'display': 0},
+    "direction": {"frequency": 0, 'display': 0},
+    "date": {"frequency": 0, 'display': 0}
+  }
 
   subscription_operator_freq = {
     "city": {"frequency": 0, 'display': 0},
@@ -32,7 +32,6 @@ class Subscription:
     "direction": {"frequency": 0, 'display': 0},
     "date": {"frequency": 0, 'display': 0}
   }
-
 
   def generate_objects(self, n):
     objects = []
